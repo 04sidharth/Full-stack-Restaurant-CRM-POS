@@ -31,5 +31,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "react-is": "^19.2.6"
   }
 }
