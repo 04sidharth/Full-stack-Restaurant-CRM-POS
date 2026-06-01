@@ -1,5 +1,8 @@
 import { api } from '@/lib/api';
 
+export type CustomerSegment = 'NEW' | 'REGULAR' | 'VIP' | 'AT_RISK' | 'INACTIVE';
+export type SegmentCounts = Record<'ALL' | CustomerSegment, number>;
+
 export interface Customer {
   id: string;
   restaurantId: string;
@@ -13,12 +16,20 @@ export interface Customer {
   city: string | null;
   pincode: string | null;
   notes: string | null;
+  tags: string[];
   loyaltyPoints: number;
   totalOrders: number;
   totalSpend: string;
   lastVisitAt: string | null;
   active: boolean;
   createdAt: string;
+}
+
+export interface CustomerInsights {
+  topItems: Array<{ name: string; quantity: number }>;
+  avgDaysBetweenVisits: number | null;
+  avgSpendPerVisit: number;
+  totalCompletedOrders: number;
 }
 
 export interface LoyaltyTransaction {
@@ -70,18 +81,28 @@ export interface CustomerInput {
   city?: string;
   pincode?: string;
   notes?: string;
+  tags?: string[];
 }
 
 export const customersApi = {
-  list: async (search?: string): Promise<Customer[]> =>
-    (await api.get('/customers', { params: { search } })).data,
+  list: async (search?: string, segment?: CustomerSegment): Promise<Customer[]> =>
+    (await api.get('/customers', { params: { search, segment } })).data,
+
+  segmentCounts: async (): Promise<SegmentCounts> =>
+    (await api.get('/customers/segments/counts')).data,
+
   get: async (id: string): Promise<CustomerDetail> => (await api.get(`/customers/${id}`)).data,
+
+  insights: async (id: string): Promise<CustomerInsights> =>
+    (await api.get(`/customers/${id}/insights`)).data,
+
   create: async (input: CustomerInput): Promise<Customer> => (await api.post('/customers', input)).data,
+
   update: async (id: string, input: Partial<CustomerInput> & { active?: boolean }): Promise<Customer> =>
     (await api.patch(`/customers/${id}`, input)).data,
-  remove: async (id: string): Promise<void> => {
-    await api.delete(`/customers/${id}`);
-  },
+
+  remove: async (id: string): Promise<void> => { await api.delete(`/customers/${id}`); },
+
   adjustLoyalty: async (
     id: string,
     input: { points: number; type?: 'EARN' | 'REDEEM' | 'ADJUST' | 'EXPIRE'; note?: string; orderId?: string },

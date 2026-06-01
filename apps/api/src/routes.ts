@@ -10,6 +10,7 @@ import { reportsRouter } from './modules/reports/reports.routes.js';
 import { leadsRouter } from './modules/leads/leads.routes.js';
 import { communicationsRouter } from './modules/communications/communications.routes.js';
 import { tasksRouter } from './modules/tasks/tasks.routes.js';
+import { campaignRouter } from './modules/campaigns/campaigns.routes.js';
 
 export const apiRouter = Router();
 
@@ -28,3 +29,4 @@ apiRouter.use('/reports', reportsRouter);
 apiRouter.use('/leads', leadsRouter);
 apiRouter.use('/communications', communicationsRouter);
 apiRouter.use('/tasks', tasksRouter);
+apiRouter.use('/campaigns', campaignRouter);

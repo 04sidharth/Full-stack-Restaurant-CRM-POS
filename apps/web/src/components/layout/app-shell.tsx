@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Soup, Receipt, Grid3x3, UtensilsCrossed,
   ChefHat, Users, Boxes, BarChart3, UserCog,
   Bell, LogOut, ChevronDown, Activity, Settings,
-  Target, MessageSquare, CheckSquare,
+  Target, MessageSquare, CheckSquare, Megaphone,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import type { Role } from '@/stores/auth-store';
@@ -23,9 +23,10 @@ const CENTER_NAV: { to: string; label: string; icon: typeof LayoutDashboard; rol
   { to: '/inventory', label: 'Inventory', icon: Boxes           },
   { to: '/reports',   label: 'Reports',   icon: BarChart3       },
   { to: '/staff',          label: 'Staff',   icon: UserCog,       roles: ['OWNER', 'MANAGER'] },
-  { to: '/leads',          label: 'Leads',   icon: Target         },
-  { to: '/communications', label: 'Comms',   icon: MessageSquare  },
-  { to: '/tasks',          label: 'Tasks',   icon: CheckSquare    },
+  { to: '/campaigns',      label: 'Campaigns', icon: Megaphone      },
+  { to: '/leads',          label: 'Leads',     icon: Target         },
+  { to: '/communications', label: 'Comms',     icon: MessageSquare  },
+  { to: '/tasks',          label: 'Tasks',     icon: CheckSquare    },
 ];
 
 export const AppShell = () => {

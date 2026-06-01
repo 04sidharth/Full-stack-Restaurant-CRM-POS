@@ -20,7 +20,7 @@ import { SettingsPage } from '@/features/settings/settings-page';
 import { LeadsPage } from '@/features/leads/leads-page';
 import { CommunicationsPage } from '@/features/communications/communications-page';
 import { TasksPage } from '@/features/tasks/tasks-page';
-import { StubPage } from '@/features/stub-page';
+import { CampaignsPage } from '@/features/campaigns/campaigns-page';
 import { AppShell } from '@/components/layout/app-shell';
 import { ProtectedRoute } from '@/components/layout/protected-route';
 
@@ -56,6 +56,7 @@ const App = () => (
             <Route path="/leads" element={<LeadsPage />} />
             <Route path="/communications" element={<CommunicationsPage />} />
             <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/campaigns" element={<CampaignsPage />} />
           </Route>
         </Route>
 

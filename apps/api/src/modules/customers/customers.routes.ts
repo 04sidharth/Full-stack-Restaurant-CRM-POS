@@ -31,6 +31,13 @@ customerRouter.get(
 );
 
 customerRouter.get(
+  '/segments/counts',
+  asyncHandler(async (req, res) => {
+    res.json(await customerService.segmentCounts(req.auth!.restaurantId));
+  }),
+);
+
+customerRouter.get(
   '/feedback',
   asyncHandler(async (req, res) => {
     res.json(await customerService.listFeedback(req.auth!.restaurantId));
@@ -72,6 +79,13 @@ customerRouter.delete(
   '/:id',
   asyncHandler(async (req, res) => {
     res.json(await customerService.delete(req.auth!.restaurantId, idParam(req)));
+  }),
+);
+
+customerRouter.get(
+  '/:id/insights',
+  asyncHandler(async (req, res) => {
+    res.json(await customerService.insights(req.auth!.restaurantId, idParam(req)));
   }),
 );
 

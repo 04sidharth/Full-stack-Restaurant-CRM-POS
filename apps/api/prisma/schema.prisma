@@ -56,6 +56,7 @@ model Restaurant {
   leads           Lead[]
   communications  Communication[]
   tasks           Task[]
+  campaigns       Campaign[]
 
   @@index([active])
 }
@@ -90,6 +91,7 @@ model User {
   commsCreated       Communication[] @relation("CommCreator")
   tasksAssigned      Task[]          @relation("TaskAssignee")
   tasksCreated       Task[]          @relation("TaskCreator")
+  campaignsCreated   Campaign[]      @relation("CampaignCreator")
 
   @@unique([restaurantId, email])
   @@index([restaurantId])
@@ -422,15 +424,21 @@ model Customer {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  tags           String[]        @default([])
+
   restaurant     Restaurant      @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   orders         Order[]
   loyaltyTxns    LoyaltyTransaction[]
   feedbacks      Feedback[]
   communications Communication[]
   tasks          Task[]
+  campaignLogs   CampaignLog[]
 
   @@unique([restaurantId, phone])
   @@index([restaurantId, name])
+  @@index([restaurantId, active, lastVisitAt])
+  @@index([restaurantId, totalOrders])
+  @@index([restaurantId, totalSpend])
 }
 
 enum LoyaltyTxnType {
@@ -678,6 +686,69 @@ model Task {
 
   @@index([restaurantId, status])
   @@index([restaurantId, dueDate])
+}
+
+// ============================================================================
+// Campaigns / Marketing
+// ============================================================================
+
+enum CampaignChannel {
+  SMS
+  WHATSAPP
+  EMAIL
+}
+
+enum CampaignSegment {
+  ALL
+  NEW
+  REGULAR
+  VIP
+  AT_RISK
+  INACTIVE
+}
+
+enum CampaignStatus {
+  DRAFT
+  SENT
+}
+
+model Campaign {
+  id            String          @id @default(cuid())
+  restaurantId  String
+  name          String
+  description   String?
+  channel       CampaignChannel
+  targetSegment CampaignSegment
+  messageBody   String
+  status        CampaignStatus  @default(DRAFT)
+  targetCount   Int             @default(0)
+  sentCount     Int             @default(0)
+  createdById   String
+  sentAt        DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  restaurant Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdBy  User          @relation("CampaignCreator", fields: [createdById], references: [id])
+  logs       CampaignLog[]
+
+  @@index([restaurantId, status])
+  @@index([restaurantId, createdAt])
+}
+
+model CampaignLog {
+  id         String   @id @default(cuid())
+  campaignId String
+  customerId String
+  channel    CampaignChannel
+  status     String           // SENT, DELIVERED, FAILED
+  sentAt     DateTime         @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([campaignId])
+  @@index([customerId])
 }
 
 // ============================================================================

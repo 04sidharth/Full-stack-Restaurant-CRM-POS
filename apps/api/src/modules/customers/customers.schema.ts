@@ -18,11 +18,16 @@ export const createCustomerSchema = z.object({
 
 export const updateCustomerSchema = createCustomerSchema.partial().extend({
   active: z.boolean().optional(),
+  tags: z.array(z.string().max(50)).max(20).optional(),
 });
+
+export const customerSegments = ['ALL', 'NEW', 'REGULAR', 'VIP', 'AT_RISK', 'INACTIVE'] as const;
+export type CustomerSegment = typeof customerSegments[number];
 
 export const listCustomersQuery = z.object({
   search: z.string().max(80).optional(),
-  limit: z.coerce.number().int().min(1).max(200).default(50),
+  segment: z.enum(customerSegments).optional(),
+  limit: z.coerce.number().int().min(1).max(500).default(200),
 });
 
 export const loyaltyAdjustSchema = z.object({
